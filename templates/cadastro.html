@@ -1,0 +1,18 @@
+{% extends "template.html" %}
+{% block conteudo %}
+<div class="form-container">
+    <form action="/" method="POST">
+
+        <label for="phone">Telefone:</label>
+        <input type="tel" id="phone" name="telefone" required>
+
+        <label for="name">Nome:</label>
+        <input type="text" id="name" name="nome" required>
+
+        <label for="password">Senha:</label>
+        <input type="password" id="password" name="senha" required>
+
+        <button type="submit" action="/login">Cadastrar</button>
+    </form>
+</div>
+{% endblock %}

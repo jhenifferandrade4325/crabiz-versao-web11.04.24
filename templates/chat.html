@@ -1,0 +1,84 @@
+{% extends "template.html" %}
+{% block conteudo %}
+<div class="chat-container">
+    <div class="messages">
+        <!-- <div class="message received" id="mensagem"><p></p></div> -->
+        <div class="message sent" id="mensagem">
+            <p>Escolha o contato com quem deseja iniciar uma conversa...</p></div>
+        <!-- Adicione mais mensagens conforme necessário -->
+    </div>
+    <div class="input-container">
+        <select name="usuario" id="usuario" onChange="mostraMensagem()">
+            <option value="telefone">Nome</option>
+        </select>
+        <input type="text" class="message-input" placeholder="Digite sua mensagem..." id="mensagem2">
+        <button class="send-button" onclick="enviaMensagem()">Enviar</button>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //função para exibir os usuários
+    function mostraUsuario(){
+        // requizição via ajax
+        $.ajax({
+            url: "/get/usuarios",
+            type: "GET",
+            success: function (contatos){
+                //a variável i representa uma contagem i=index
+                for(let i=0; i<contatos.length; i++){
+                    let tag = '<option value="'+contatos[i]['telefone']+'">'+contatos[i]['nome']+'</option>'
+                    $("#usuario").append(tag)
+
+                }
+            }
+        })
+    }
+
+    //função para mostar as mensagens
+    function mostraMensagem(){
+        //o $ é utilizado para especificar que é jquery 
+        // get = pega os dados
+        // post = envia dados
+        $.ajax({
+            url: "/get/mensagens/"+$('#usuario').val()/*pegando o valor do select*/,
+            type: "GET",
+            success: function (mensagens){
+
+                $("#mensagem").empty()
+
+                /* i significa index */
+                for(let i=0; i<mensagens.length; i++){
+                    let tag = '<p>'+mensagens[i]["mensagem"]+"</p>"
+                    //insere a mensagem na div
+                    $("#mensagem").append(tag)
+                }
+            }
+        })
+    }
+
+    //função para 
+    function enviaMensagem(){
+
+        var dados = {
+            mensagem: $("#mensagem2").val(),
+            usuario: $("#usuario").val()
+        }
+        //o $ é utilizado para especificar que é jquery 
+        // get = pega os dados
+        // post = envia dados
+        $.ajax({
+            url:"/post/enviamensagem",
+            type:"POST",
+            data: JSON.stringify(dados),
+            contentType: "application/json",
+            success: mostraMensagem(),
+            error: function(){
+                alert("ERRO AO ENVIAR A MENSAGEM")
+            }
+        })
+    }
+
+    setInterval(mostraMensagem, 5000)
+    $(document).ready(mostraUsuario())
+</script>
+{% endblock %}
